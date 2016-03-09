@@ -73,6 +73,7 @@ function config_generator_generator(dflt_cores_per_executor) {
     return config_generator;
 }
 
+/// spark-defaults.conf uses spaces to separate keys and values.
 function fmt_spark_default(config) {
     var ret = "";
     for (var key in config) {
@@ -91,6 +92,16 @@ function fmt_spark_submit(config) {
     return ret;
 }
 
+/// Hanythingondemand hod.conf uses '=' to separate keys and values.
+function fmt_hod_conf(config) {
+    var ret = "[spark-default.conf]<br/>";
+    for (var key in config) {
+        ret += key + "=" + config[key] + '<br/>';
+    }
+    console.log(ret);
+    return ret;
+}
+
 function SparkConfigCalculator() {
     this.cluster_types = [
     {'name': "General use case", "config_generator": config_generator_generator(2)},
@@ -103,11 +114,13 @@ function SparkConfigCalculator() {
     this.tempdir = '/tmp';
     this.spark_default = ko.observable();
     this.spark_submit= ko.observable();
+    this.hod_conf = ko.observable();
 
     this.generate = function() {
         var configs = this.chosen_cluster_type().config_generator(this.num_nodes, this.num_cores, this.memory_per_node, this.tempdir);
         this.spark_default(fmt_spark_default(configs.spark_defaults));
         this.spark_submit(fmt_spark_submit(configs.spark_submit));
+        this.hod_conf(fmt_hod_conf(configs.spark_defaults));
     };
 
     this.generate();
