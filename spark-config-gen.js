@@ -84,7 +84,7 @@ function fmt_spark_default(config) {
 }
 
 function fmt_spark_submit(config) {
-    var ret = "spark-submit --master yarn --deploy-mode cluster";
+    var ret = "spark-submit --master yarn --deploy-mode cluster ";
     for (var key in config) {
         ret += "--" + key + " " + config[key] + " ";
     }
